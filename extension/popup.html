@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    :root {
+      --bg-color: #ffffff;
+      --text-primary: #000000;
+      --text-secondary: #86868b; 
+      --input-bg: #f2f2f7;      
+      --input-text: #000000;
+      --btn-bg: #007aff;        
+      --btn-text: #ffffff;
+      --btn-hover: #0062cc;
+      --border-radius: 12px;  
+      --select-bg: #f2f2f7;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-color: #1c1c1e;   
+        --text-primary: #ffffff;
+        --text-secondary: #98989d;
+        --input-bg: #2c2c2e;    
+        --input-text: #ffffff;
+        --btn-bg: #0a84ff;      
+        --btn-hover: #007aff;
+        --select-bg: #2c2c2e;
+      }
+    }
+
+    body {
+      width: 300px;
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-primary);
+      transition: background-color 0.3s, color 0.3s; 
+      margin: 0;
+      user-select: none; 
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px; 
+    }
+    
+    h3 {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.4px;
+    }
+    
+    .icon {
+      font-size: 20px;
+      margin-right: 8px;
+    }
+
+    .label-group {
+      margin-bottom: 6px;
+      margin-top: 12px;
+    }
+    
+    .note {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 400;
+      line-height: 1.4;
+    }
+
+    input[type="text"], input[type="password"], select {
+      width: 100%;
+      padding: 12px 12px;
+      box-sizing: border-box;
+      background-color: var(--input-bg);
+      color: var(--input-text);
+      border: none;
+      border-radius: var(--border-radius);
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    select {
+      appearance: none; 
+      -webkit-appearance: none;
+      cursor: pointer;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2386868b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      background-size: 16px;
+    }
+
+    input:focus, select:focus {
+      background-color: var(--bg-color); 
+      box-shadow: 0 0 0 2px var(--btn-bg); 
+    }
+
+    input::placeholder {
+      color: var(--text-secondary);
+      opacity: 0.7;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 24px; 
+      background-color: var(--btn-bg);
+      color: var(--btn-text);
+      border: none;
+      border-radius: var(--border-radius);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.1s, background-color 0.2s;
+    }
+
+    button:hover {
+      background-color: var(--btn-hover);
+    }
+
+    button:active {
+      transform: scale(0.98); 
+    }
+
+    .status {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #34c759; 
+      text-align: center;
+      font-weight: 500;
+      opacity: 0;
+      transition: opacity 0.3s;
+      height: 20px; 
+    }
+    
+    .status.show {
+      opacity: 1;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 26px;
+      flex-shrink: 0; 
+    }
+
+    .switch input { 
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #e9e9ea;
+      transition: .3s cubic-bezier(0.4, 0.0, 0.2, 1);
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 22px;
+      width: 22px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      transition: .3s cubic-bezier(0.4, 0.0, 0.2, 1);
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    }
+
+    input:checked + .slider {
+      background-color: #34c759;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(18px);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .slider { background-color: #3a3a3c; }
+    }
+
+    .hidden { display: none; }
+    .advanced-settings { 
+        border-top: 1px solid rgba(0,0,0,0.1); 
+        margin-top: 15px; 
+        padding-top: 10px; 
+    }
+    @media (prefers-color-scheme: dark) {
+        .advanced-settings { border-top: 1px solid rgba(255,255,255,0.1); }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span class="icon">⚙️</span>
+    <h3>AI 设置</h3>
+  </div>
+
+  <div class="label-group" style="margin-top: 0;">
+    <div class="note">选择 AI 服务商</div>
+  </div>
+  <select id="providerSelect">
+    <option value="deepseek">DeepSeek</option>
+    <option value="openai">ChatGPT</option>
+    <option value="gemini">Gemini</option>
+    <option value="chrome_local">Chrome 内置AI</option>
+    <option value="custom">自定义</option>
+  </select>
+  
+  <div class="label-group" style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+    <div class="note" style="margin-right: 12px;">
+      显示配图
+    </div>
+    <label class="switch">
+      <input type="checkbox" id="imageToggle" checked>
+      <span class="slider round"></span>
+    </label>
+  </div>
+
+  <div id="apiKeyGroup">
+      <div class="label-group"><div class="note">API Key</div></div>
+      <input type="password" id="apiKeyInput" placeholder="sk-..." spellcheck="false">
+      <div class="note" style="font-size: 11px; opacity: 0.8; margin-top: 6px;">
+        DeepSeek 留空可用公共线，本地模式无需 Key
+      </div>
+  </div>
+
+  <div id="customSettings" class="advanced-settings hidden">
+      <div class="label-group"><div class="note">Base URL (接口地址)</div></div>
+      <input type="text" id="baseUrlInput" placeholder="例如: https://api.deepseek.com" spellcheck="false">
+      
+      <div class="label-group"><div class="note">Model Name (模型名称)</div></div>
+      <input type="text" id="modelInput" placeholder="例如: gpt-4o, llama3" spellcheck="false">
+  </div>
+  
+  <button id="saveBtn">保存更改</button>
+  
+  <div id="status" class="status">✓ 已保存</div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "A Translator",
+  "version": "2.2",
+  "description": "基于 DeepSeek 的多语言单词深度解析和句子翻译，提供词源、例句和图片",
+  "permissions": [
+    "contextMenus", 
+    "storage"  
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "翻译",
+    "default_icon": {
+      "16": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
+    }
+  },
+
+  "host_permissions": [
+    "https://*.hf.space/*"
+  ],
+  
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "css": ["content.css"],
+      "js": ["content.js"]
+    }
+  ]
+}
