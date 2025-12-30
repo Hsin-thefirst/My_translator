@@ -14,8 +14,8 @@
 * 自动配图：通过 Python 后端自动抓取 Bing 图片，辅助视觉记忆。
 * 极简 UI：磨砂玻璃质感卡片，支持随意拖拽、更改窗口，支持黑夜模式（随浏览器主题变化）。
 
-默认使用Deepseek API Key，留白则是使用主包的key（只充了十块），支持多种服务商API，支持自定义
-现支持使用Chrome 内置 API
+默认使用Deepseek API Key，留白则是使用主包的key（只充了十块），支持多种服务商API，支持自定义  
+现支持使用Chrome 内置 API  
 <img width="340" height="299" alt="image" src="https://github.com/user-attachments/assets/5996882b-43f2-4673-b05d-8a5ccbb150ba" />
 <img width="514" height="184" alt="image" src="https://github.com/user-attachments/assets/8386b76f-3450-41be-9927-d74f556a6222" />
 
