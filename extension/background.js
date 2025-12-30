@@ -2,29 +2,58 @@ const API_URL = "https://hsin11111-my-translator.hf.space/process";
 
 async function translateWithLocalAI(text, tabId) {
     try {
-        const hasDetector = self.ai && self.ai.languageDetector;
-        const hasTranslator = self.translation && self.translation.createTranslator;
-
-        if (!hasDetector || !hasTranslator) {
-            throw new Error("您的浏览器未开启 AI Flags 或版本过低。请使用 Chrome Canary 并开启 Translation API。");
+        if (!('Translator' in self)) {
+            throw new Error("当前浏览器环境找不到 Translator API，请确认 Chrome 版本及 Flags 设置。");
         }
 
-        console.log("[Local AI] 1. 正在识别语言...");
-        const detector = await self.ai.languageDetector.create();
-        const detectionResult = await detector.detect(text);
-        const sourceLang = detectionResult[0].detectedLanguage;
-        console.log(`[Local AI] 识别结果: ${sourceLang}`);
+        console.log("[Local AI] API 检测通过，准备创建翻译器...");
 
-        console.log("[Local AI] 2. 创建翻译器...");
-        const targetLang = sourceLang.startsWith('zh') ? 'en' : 'zh';
+        let sourceLang = 'en';
 
-        const translator = await self.translation.createTranslator({
-            sourceLanguage: sourceLang,
-            targetLanguage: targetLang
+        if (self.ai && self.ai.languageDetector) {
+            try {
+                const detector = await self.ai.languageDetector.create();
+                const results = await detector.detect(text);
+                if (results.length > 0) {
+                    sourceLang = results[0].detectedLanguage;
+                    console.log(`[Local AI] 检测到语言: ${sourceLang}`);
+                }
+            } catch (e) {
+                console.warn("[Local AI] 语言检测失败，回退到英文:", e);
+            }
+        }
+
+        const targetLang = 'zh'; 
+
+        const finalSource = sourceLang.startsWith('zh') ? 'zh' : sourceLang;
+        const finalTarget = sourceLang.startsWith('zh') ? 'en' : 'zh';
+
+        console.log(`[Local AI] 准备模型: ${finalSource} -> ${finalTarget}`);
+
+        const availability = await self.Translator.availability({
+            sourceLanguage: finalSource,
+            targetLanguage: finalTarget
         });
 
-        console.log("[Local AI] 3. 开始翻译...");
+        if (availability === 'no') {
+            throw new Error(`无法翻译该语言对 (${finalSource}->${finalTarget})，可能不支持或被禁用。`);
+        }
+
+        const translator = await self.Translator.create({
+            sourceLanguage: finalSource,
+            targetLanguage: finalTarget,
+            monitor(m) {
+                m.addEventListener('downloadprogress', (e) => {
+                    console.log(`[Local AI] 模型下载进度: ${Math.round(e.loaded / e.total * 100)}%`);
+                });
+            },
+        });
+
+        console.log("[Local AI] 翻译器创建成功，开始翻译...");
+
         const result = await translator.translate(text);
+        console.log("[Local AI] 翻译结果:", result);
+
         const mockData = {
             type: "sentence", 
             word: text,
@@ -38,9 +67,15 @@ async function translateWithLocalAI(text, tabId) {
 
     } catch (err) {
         console.error("[Local AI Error]", err);
+
+        let errorMsg = "本地 AI 调用失败: " + err.message;
+        if (err.message.includes("download")) {
+            errorMsg = "正在下载 AI 模型，请稍候再试...";
+        }
+
         chrome.tabs.sendMessage(tabId, { 
             action: "show_error", 
-            message: "本地 AI 失败: " + err.message + " (请确保已下载离线语言包)"
+            message: errorMsg
         });
     }
 }
