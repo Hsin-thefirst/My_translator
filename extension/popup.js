@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'user_ai_provider': providerSelect.value,
             'user_ai_key': inputKey.value.trim(),
             'user_show_image': imageToggle.checked,
-            'user_custom_url': cleanUrl, // 保存处理后的干净 URL
+            'user_custom_url': cleanUrl,
             'user_custom_model': inputModel.value.trim()
         }, () => {
             setTimeout(() => {
