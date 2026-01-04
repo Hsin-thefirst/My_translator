@@ -103,6 +103,24 @@ async function handleTranslation(text, tabId) {
         const customUrl = data.user_custom_url || "";
         const customModel = data.user_custom_model || "";
 
+        if (provider === 'custom') {
+            if (!customUrl) {
+                chrome.tabs.sendMessage(tabId, { 
+                    action: "show_error", 
+                    message: "配置错误：请在插件设置中填写 Base URL" 
+                });
+                return;
+            }
+
+            if (customUrl.includes('localhost') || customUrl.includes('127.0.0.1')) {
+                chrome.tabs.sendMessage(tabId, { 
+                    action: "show_error", 
+                    message: "不支持 Localhost：因经由云端中转，请使用公网可访问的 API 地址" 
+                });
+                return;
+            }
+        }
+
         console.log(`[Background] 请求云端 (${provider})...`);
 
         const pyResponse = await fetch(API_URL, {
@@ -116,7 +134,7 @@ async function handleTranslation(text, tabId) {
             },
             body: JSON.stringify({ 
                 text: text,
-                url: "chrome-extension",
+                url: "chrome-extension", 
                 need_image: needImage
             }) 
         });

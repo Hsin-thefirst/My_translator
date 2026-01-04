@@ -44,12 +44,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     saveBtn.addEventListener('click', () => {
         saveBtn.innerText = "保存中...";
-        
+        let rawUrl = inputBaseUrl.value.trim();
+        let cleanUrl = rawUrl.replace(/\/+$/, ''); 
+
         chrome.storage.local.set({ 
             'user_ai_provider': providerSelect.value,
             'user_ai_key': inputKey.value.trim(),
             'user_show_image': imageToggle.checked,
-            'user_custom_url': inputBaseUrl.value.trim(),
+            'user_custom_url': cleanUrl, // 保存处理后的干净 URL
             'user_custom_model': inputModel.value.trim()
         }, () => {
             setTimeout(() => {
